@@ -1,31 +1,15 @@
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
-#include <stdlib.h>
+#include "oyun.h"
 #include <stdio.h>
 #define MERMİ 100
 
 
-typedef struct mermi{
-    float x, y;
-    int atış;
-    int genislik, yukseklik;
-    float hız;
-    SDL_Texture* Mermiresmi;
-
-} mermi;
 
 
 
 
-typedef struct {
-    float x, y;
-    int genislik, yukseklik;
-    float hız;
-    SDL_Texture* Gemi;
 
-} gemi;
+
 SDL_Texture* arkaPlan=NULL;
 
 
@@ -37,7 +21,7 @@ int main(int argc, char* argv[]) {
     }
 
    
-    // Oyun penceresi ve çizici oluşturma
+  
     SDL_Window* ekran= SDL_CreateWindow("oyun ekranı ", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
     SDL_Renderer* çizici = SDL_CreateRenderer(ekran, -1, SDL_RENDERER_ACCELERATED);
    
@@ -76,7 +60,7 @@ int main(int argc, char* argv[]) {
             
     while (oyunDevamEdiyor) {
     
-         while (SDL_PollEvent(&olay)) {
+        while (SDL_PollEvent(&olay)) {
             if (olay.type == SDL_QUIT) {
                 oyunDevamEdiyor = 0;
             }
@@ -100,23 +84,18 @@ int main(int argc, char* argv[]) {
                                     break;
                                 }
                             }
-                            break;
-                        default:
-                            break;
                     }
                 }
         }
 
-        for (int i = 0; i < MERMİ; i++) {
-            if (mermiler[i].atış == 1) {
-                mermiler[i].y -= mermiler[i].hız;
-                if (mermiler[i].y < 0) {
-                    mermiler[i].atış = 0;
-                }
-            }
-        }
-
-
+        mermiyenile(mermiler);
+      
+      
+      //çizimler
+        arkaplançiz(arkaPlan,çizici);
+        mermiçiz(mermiler,çizici);
+        gemiçiz(anagemi,çizici);
+        
 
 
 
@@ -125,36 +104,12 @@ int main(int argc, char* argv[]) {
 
         
          
-        SDL_SetRenderDrawColor(çizici, 0, 0, 0, 255);
-        SDL_RenderClear(çizici);
+      
 
-        if(arkaPlan) {
-            SDL_RenderCopy(çizici, arkaPlan, NULL, NULL);
-        } 
-    
-
-        for (int i = 0; i < MERMİ; i++) {
-            if (mermiler[i].atış == 1) {
-                SDL_Rect mermiögesi = { (int)mermiler[i].x, (int)mermiler[i].y, mermiler[i].genislik, mermiler[i].yukseklik };
-                if (mermiler[i].Mermiresmi != NULL) {
-                    SDL_RenderCopy(çizici, mermiler[i].Mermiresmi, NULL, &mermiögesi);
-                } 
-                else {
-                    SDL_SetRenderDrawColor(çizici, 255, 255, 255, 255);
-                    SDL_RenderFillRect(çizici, &mermiögesi);
-                }
-            }
-        }
+        
    
     
-        SDL_Rect gemiögesi = { (int)anagemi.x, (int)anagemi.y, anagemi.genislik, anagemi.yukseklik };
-        if (anagemi.Gemi != NULL) {
-        SDL_RenderCopy(çizici, anagemi.Gemi, NULL, &gemiögesi);
-        } 
-        else {
-        SDL_SetRenderDrawColor(çizici, 255, 255, 255, 255);
-        SDL_RenderFillRect(çizici, &gemiögesi);
-        }
+       
 
         SDL_RenderPresent(çizici);
     

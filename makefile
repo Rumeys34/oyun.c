@@ -1,24 +1,24 @@
-
 CC = gcc
-# Mac Homebrew yollarını doğrudan ekliyoruz
-CFLAGS = -Wall -Wextra -std=c11 $(shell sdl2-config --cflags) -I/opt/homebrew/include
-LIBS = $(shell sdl2-config --libs) -lSDL2_image -lSDL2_mixer -L/opt/homebrew/lib
+# MacBook Homebrew yolları
+CFLAGS = -Wall -Wextra -std=c11 -I/opt/homebrew/include -I/opt/homebrew/include/SDL2
+LDFLAGS = -L/opt/homebrew/lib -lSDL2 -lSDL2_image -lSDL2_mixer
 
-SRC = oyun.c
-OBJ = $(SRC:.c=.o)
-EXE = oyun
+TARGET = uzay_oyunu
 
-all: $(EXE)
+SRCS = oyun.c fonksiyonlar.c
+OBJS = $(SRCS:.c=.o)
 
-$(EXE): $(OBJ)
-	$(CC) $(OBJ) -o $(EXE) $(LIBS)
+all: $(TARGET)
 
-%.o: %.c
+$(TARGET): $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET) $(LDFLAGS)
+
+
+%.o: %.c oyun.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ) $(EXE)
+	rm -f *.o $(TARGET)
 
 run: all
-	./$(EXE)
-
+	./$(TARGET)
