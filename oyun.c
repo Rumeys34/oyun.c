@@ -10,7 +10,7 @@
 
 
 
-SDL_Texture* arkaPlan=NULL;
+
 
 
 int main(int argc, char* argv[]) {
@@ -19,24 +19,33 @@ int main(int argc, char* argv[]) {
         printf("Hata: %s\n", SDL_GetError());
         return 1;
     }
-
+    
    
-  
+    SDL_Texture* arkaPlan;
     SDL_Window* ekran= SDL_CreateWindow("oyun ekranı ", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
     SDL_Renderer* çizici = SDL_CreateRenderer(ekran, -1, SDL_RENDERER_ACCELERATED);
-   
+    SDL_Texture* düşmanResmi = IMG_LoadTexture(çizici, "anagemi.png");
 
-   // Gemi özelliklerini ayarlama
+   düşman *düşmanlar = NULL; 
+   int düşman_sayısı = 0;
+   
+   
+    // Gemi özelliklerini ayarlama
     gemi anagemi;
     anagemi.x = 400;
     anagemi.y = 530;
     anagemi.genislik = 70;
     anagemi.yukseklik = 70;
     anagemi.hız =20;
+
+    
+     
+     
     
     //görselleri yükleme
     arkaPlan = IMG_LoadTexture(çizici, "arkplan2.jpg");
     anagemi.Gemi = IMG_LoadTexture(çizici, "anagemi.png");
+    
 
 
     mermi mermiler[MERMİ];
@@ -49,6 +58,7 @@ int main(int argc, char* argv[]) {
     }
    
    
+   
     
     
     
@@ -59,6 +69,13 @@ int main(int argc, char* argv[]) {
     SDL_Event olay;
             
     while (oyunDevamEdiyor) {
+
+        düşman_sayısı++;
+        if (düşman_sayısı % 60 == 0) { // Her 60 frame'de bir düşman ekle
+            düşmanekle(&düşmanlar,düşmanResmi);
+            düşman_sayısı = 0;
+        }
+        
     
         while (SDL_PollEvent(&olay)) {
             if (olay.type == SDL_QUIT) {
@@ -87,42 +104,36 @@ int main(int argc, char* argv[]) {
                     }
                 }
         }
-
+        düşmanhareket(düşmanlar, &oyunDevamEdiyor);
         mermiyenile(mermiler);
       
       
       //çizimler
+        SDL_RenderClear(çizici);
         arkaplançiz(arkaPlan,çizici);
         mermiçiz(mermiler,çizici);
         gemiçiz(anagemi,çizici);
-        
-
-
-
-
-
-
-        
-         
-      
-
-        
-   
-    
-       
+        düşmançiz(düşmanlar,çizici);
 
         SDL_RenderPresent(çizici);
+        SDL_Delay(16); // Yaklaşık 60 FPS için 16 ms gecikme
     
     } 
-      
+
+    düşmansil(&düşmanlar);
+    SDL_DestroyTexture(arkaPlan);
+    SDL_DestroyTexture(düşmanResmi);
+    SDL_DestroyTexture(anagemi.Gemi);
+    for (int i = 0; i < MERMİ; i++) {
+        SDL_DestroyTexture(mermiler[i].Mermiresmi);
+    }
     SDL_DestroyRenderer(çizici);
     SDL_DestroyWindow(ekran);
     IMG_Quit();
-    SDL_DestroyTexture(arkaPlan); 
     SDL_Quit();
 
 
-    return 0;
+return 0;
 } 
 
         
