@@ -17,9 +17,8 @@ int main(void) {
     SDL_Renderer* çizici = SDL_CreateRenderer(ekran, -1, SDL_RENDERER_ACCELERATED);
     SDL_Texture* düşmanResmi = IMG_LoadTexture(çizici, "anagemi.png");
 
+    
    düşman *düşmanlar = NULL; 
-   int düşman_sayısı = 0;
-   
    
     // Gemi özelliklerini ayarlama
     gemi anagemi;
@@ -29,16 +28,11 @@ int main(void) {
     anagemi.yukseklik = 70;
     anagemi.hız =20;
     anagemi.can = 3;
-
-    
-     
-     
     
     //görselleri yükleme
     arkaPlan = IMG_LoadTexture(çizici, "arkplan2.jpg");
     anagemi.Gemi = IMG_LoadTexture(çizici, "anagemi.png");
     
-
 
     mermi mermiler[MERMİ];
     for (int i = 0; i < MERMİ; i++) {
@@ -63,19 +57,13 @@ int main(void) {
     
 
 // Oyun döngüsü
-
+    düşmanekle(&düşmanlar, düşmanResmi, 5, 10); // 5 satır, 10 sütun düşman ekle
     int oyunDevamEdiyor = 1;
     SDL_Event olay;
             
     while (oyunDevamEdiyor) {
-
-        düşman_sayısı++;
-        if (düşman_sayısı % 60 == 0) { // Her 60 frame'de bir düşman ekle
-            düşmanekle(&düşmanlar,düşmanResmi);
-            düşman_sayısı = 0;
-        }
-        
         düşmanateş(düşmanlar, düşman_mermiler);
+
         while (SDL_PollEvent(&olay)) {
             if (olay.type == SDL_QUIT) {
                 oyunDevamEdiyor = 0;
