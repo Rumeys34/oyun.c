@@ -21,6 +21,7 @@ typedef struct {
     int genislik, yukseklik;
     float hız;
     SDL_Texture* Gemi;
+    int can;
 
 } gemi;
 
@@ -45,7 +46,9 @@ void düşmanekle(düşman **sayı, SDL_Texture* resim);
 void düşmançiz(düşman *sayı, SDL_Renderer *çizici);
 void düşmanhareket(düşman *sayı, int *oyunDevamEdiyor);
 void düşmansil(düşman **sayı);
-
+void düşmanateş(düşman *düşmanlar, mermi *mermiler);
+void düşmanmermiyenile(mermi *mermiler);
+void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, int *oyunDevamEdiyor);
 
 
 #endif 

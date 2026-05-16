@@ -62,7 +62,7 @@ void düşmanekle(düşman **sayı, SDL_Texture* resim) {
     
     yeni->x = rand() % 750; 
     yeni->y = -50;
-    yeni->hız = 1 + (rand() % 3);
+    yeni->hız = 1 + (rand() % 1);
     yeni->genislik = 50;
     yeni->yukseklik = 50;
     yeni->Düşmanresmi = resim;
@@ -91,6 +91,35 @@ void düşmansil(düşman **sayı) {
     }
 }
  
+void düşmanateş(düşman *düşmanlar, mermi *mermiler) {
+    düşman *gecici = düşmanlar;
+    while (gecici != NULL) {
+        if (rand() % 250==0) { // Her 250 frame'de bir düşman ateş eder
+            for (int i = 0; i < MERMİ; i++) {
+                if (mermiler[i].atış == 0) {
+                    mermiler[i].x = gecici->x + gecici->genislik / 2;
+                    mermiler[i].y = gecici->y + gecici->yukseklik;
+                    mermiler[i].atış = 1;
+                    mermiler[i].hız = 1 + rand() % 2;
+                    break;
+                }
+            }
+        }
+
+        gecici = gecici->sonraki;  
+    }
+}
+
+void düşmanmermiyenile(mermi *mermiler) {
+    for (int i = 0; i < MERMİ; i++) {
+        if (mermiler[i].atış == 1) {
+            mermiler[i].y += mermiler[i].hız;
+            if (mermiler[i].y > 600) {
+                mermiler[i].atış = 0;
+            }
+        }
+    }
+}
 
 
 //mermi
@@ -103,4 +132,47 @@ void mermiyenile(mermi *mermiler) {
                 }
             }
         }
+}
+
+//çarpışma
+void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, int *oyunDevamEdiyor) {
+    for (int i =0;i<MERMİ;i++){
+        if (mermiler[i].atış==0) continue;
+        düşman *gecici = *düşmanlar;
+        düşman *önceki = NULL;
+        while (gecici != NULL) {
+            if (mermiler[i].x < gecici->x + gecici->genislik &&
+                mermiler[i].x + mermiler[i].genislik > gecici->x &&
+                mermiler[i].y < gecici->y + gecici->yukseklik &&
+                mermiler[i].y + mermiler[i].yukseklik > gecici->y) {
+                
+                mermiler[i].atış = 0; 
+               
+                if (önceki == NULL) {
+                    *düşmanlar = gecici->sonraki;
+                } else {
+                    önceki->sonraki = gecici->sonraki;
+                }
+                free(gecici);
+                break;
+            }
+            önceki = gecici;
+            gecici = gecici->sonraki;
+        }
+    }
+    for(int i=0;i<MERMİ;i++){
+        if (düşman_mermiler[i].atış==1){
+            if (düşman_mermiler[i].x < anagemi->x + anagemi->genislik &&
+                düşman_mermiler[i].x + düşman_mermiler[i].genislik > anagemi->x &&
+                düşman_mermiler[i].y < anagemi->y + anagemi->yukseklik &&
+                düşman_mermiler[i].y + düşman_mermiler[i].yukseklik > anagemi->y) {
+                
+                düşman_mermiler[i].atış = 0; 
+                anagemi->can--;
+                if (anagemi->can <= 0) {
+                    *oyunDevamEdiyor = 0;
+                }
+            }
+        }
+    }
 }

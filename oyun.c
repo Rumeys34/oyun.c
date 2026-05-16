@@ -4,16 +4,7 @@
 #define MERMİ 100
 
 
-
-
-
-
-
-
-
-
-
-int main(int argc, char* argv[]) {
+int main(void) {
     IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
      if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("Hata: %s\n", SDL_GetError());
@@ -37,6 +28,7 @@ int main(int argc, char* argv[]) {
     anagemi.genislik = 70;
     anagemi.yukseklik = 70;
     anagemi.hız =20;
+    anagemi.can = 3;
 
     
      
@@ -51,13 +43,20 @@ int main(int argc, char* argv[]) {
     mermi mermiler[MERMİ];
     for (int i = 0; i < MERMİ; i++) {
         mermiler[i].atış = 0;
-        mermiler[i].hız = 2;
-        mermiler[i].genislik = 20;
-        mermiler[i].yukseklik = 20;
+        mermiler[i].hız = 5;
+        mermiler[i].genislik = 10;
+        mermiler[i].yukseklik = 10;
         mermiler[i].Mermiresmi = IMG_LoadTexture(çizici, "mermi2.png");
     }
    
-   
+   mermi düşman_mermiler[MERMİ];
+    for (int i = 0; i < MERMİ; i++) {
+        düşman_mermiler[i].atış = 0;
+        düşman_mermiler[i].hız = 2;
+        düşman_mermiler[i].genislik = 10;
+        düşman_mermiler[i].yukseklik = 10;
+        düşman_mermiler[i].Mermiresmi = IMG_LoadTexture(çizici, "mermi2.png");
+    }
    
     
     
@@ -76,21 +75,25 @@ int main(int argc, char* argv[]) {
             düşman_sayısı = 0;
         }
         
-    
+        düşmanateş(düşmanlar, düşman_mermiler);
         while (SDL_PollEvent(&olay)) {
             if (olay.type == SDL_QUIT) {
                 oyunDevamEdiyor = 0;
             }
-
-        
-
-               if (olay.type == SDL_KEYDOWN) {
+           
+            if (olay.type == SDL_KEYDOWN) {
                     switch (olay.key.keysym.sym) {
                        case SDLK_LEFT:
                             anagemi.x -= anagemi.hız;
+                            if (anagemi.x < 0) {
+                                anagemi.x = 0; 
+                            }
                             break;
                         case SDLK_RIGHT:
                             anagemi.x += anagemi.hız;
+                            if (anagemi.x > 730) {
+                                anagemi.x = 730; // Sağ sınır
+                            }
                             break;
                         case SDLK_SPACE:
                             for (int i = 0; i < MERMİ; i++) {
@@ -106,12 +109,15 @@ int main(int argc, char* argv[]) {
         }
         düşmanhareket(düşmanlar, &oyunDevamEdiyor);
         mermiyenile(mermiler);
+        düşmanmermiyenile(düşman_mermiler);
+        çarpışma(mermiler, &düşmanlar, düşman_mermiler, &anagemi, &oyunDevamEdiyor);
       
       
       //çizimler
         SDL_RenderClear(çizici);
         arkaplançiz(arkaPlan,çizici);
         mermiçiz(mermiler,çizici);
+        mermiçiz(düşman_mermiler, çizici);
         gemiçiz(anagemi,çizici);
         düşmançiz(düşmanlar,çizici);
 
@@ -127,6 +133,11 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < MERMİ; i++) {
         SDL_DestroyTexture(mermiler[i].Mermiresmi);
     }
+    for (int i = 0; i < MERMİ; i++) {
+        SDL_DestroyTexture(düşman_mermiler[i].Mermiresmi);
+    }    
+
+    
     SDL_DestroyRenderer(çizici);
     SDL_DestroyWindow(ekran);
     IMG_Quit();
