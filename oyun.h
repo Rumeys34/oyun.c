@@ -3,8 +3,10 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #define MERMİ 100
 
 
@@ -46,6 +48,7 @@ void düşmansil(düşman **sayı);
 void düşmanateş(düşman *düşmanlar, mermi *düşman_mermiler);
 void düşmanmermiyenile(mermi *mermiler);
 void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, int *oyunDevamEdiyor);
+void cançiz(SDL_Renderer *çizici,SDL_Texture *can_resmi,int kalan_can);
 
 
 #endif 

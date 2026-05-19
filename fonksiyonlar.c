@@ -54,14 +54,31 @@ void düşmançiz(düşman *sayı, SDL_Renderer *çizici) {
 }
 
 
+void cançiz(SDL_Renderer *çizici,SDL_Texture *can_resmi,int kalan_can) {
+    if (can_resmi==NULL ||  kalan_can <= 0) return;
+    int can_x = 750;
+    int can_y = 20;
+    int can_genislik = 25;
+    int can_yukseklik = 25;
+    int bosluk = 28;
+    for (int i = 0; i < kalan_can; i++) {
+        SDL_Rect can_ögesi = { can_x - (i * bosluk), can_y, can_genislik, can_yukseklik };
+        SDL_RenderCopy(çizici, can_resmi, NULL, &can_ögesi);
+    }
+    
+    
+    
+    
+}
+
 
 //düşman 
 void düşmanekle(düşman **sayı, SDL_Texture* resim,int satır,int sutun) {
-    int ilk_x = 80;
-    int ilk_y = 50;
+    int ilk_x = 50;
+    int ilk_y = 40;
     int genislik = 45;
-    int yukseklik = 45;
-    int bosluk = 15;
+    int yukseklik = 40;
+    int bosluk = 7;
     for(int i=0; i<satır; i++){
         for(int j=0;j<sutun;j++){
             düşman *yeni = (düşman*)malloc(sizeof(düşman));
@@ -123,8 +140,8 @@ void düşmanateş(düşman *düşmanlar, mermi *düşman_mermiler) {
             aktif_mermi++;
         }
     }
-    if (aktif_mermi >= 10) return;
-     if (rand() % 100 != 0) return; 
+    if (aktif_mermi >= 8) return;
+    if (rand() % 160 != 0) return; 
 
     int toplam_dusman = 0;
     düşman *gecici = düşmanlar;
@@ -134,7 +151,7 @@ void düşmanateş(düşman *düşmanlar, mermi *düşman_mermiler) {
     }
 
     if (toplam_dusman == 0) return;
-    int ateş_eden_düşmanlar= 5;
+    int ateş_eden_düşmanlar= 3;
     if (toplam_dusman < ateş_eden_düşmanlar) {
         ateş_eden_düşmanlar = toplam_dusman;
     }

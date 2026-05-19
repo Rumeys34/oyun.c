@@ -23,23 +23,25 @@ int main(void) {
     // Gemi özelliklerini ayarlama
     gemi anagemi;
     anagemi.x = 400;
-    anagemi.y = 530;
-    anagemi.genislik = 70;
-    anagemi.yukseklik = 70;
+    anagemi.y = 520;
+    anagemi.genislik = 140;
+    anagemi.yukseklik = 100;
     anagemi.hız =20;
-    anagemi.can = 3;
+    anagemi.can = 5;
     
     //görselleri yükleme
     arkaPlan = IMG_LoadTexture(çizici, "arkplan2.jpg");
-    anagemi.Gemi = IMG_LoadTexture(çizici, "anagemi.png");
+    anagemi.Gemi = IMG_LoadTexture(çizici, "anagemi1.png");
+    SDL_Texture* can_resmi = IMG_LoadTexture(çizici, "can2.png");
+    
     
 
     mermi mermiler[MERMİ];
     for (int i = 0; i < MERMİ; i++) {
         mermiler[i].atış = 0;
         mermiler[i].hız = 5;
-        mermiler[i].genislik = 10;
-        mermiler[i].yukseklik = 10;
+        mermiler[i].genislik = 12;
+        mermiler[i].yukseklik = 15;
         mermiler[i].Mermiresmi = IMG_LoadTexture(çizici, "mermi2.png");
     }
    
@@ -47,9 +49,9 @@ int main(void) {
     for (int i = 0; i < MERMİ; i++) {
         düşman_mermiler[i].atış = 0;
         düşman_mermiler[i].hız = 2;
-        düşman_mermiler[i].genislik = 10;
-        düşman_mermiler[i].yukseklik = 10;
-        düşman_mermiler[i].Mermiresmi = IMG_LoadTexture(çizici, "mermi2.png");
+        düşman_mermiler[i].genislik = 12;
+        düşman_mermiler[i].yukseklik = 15;
+        düşman_mermiler[i].Mermiresmi = IMG_LoadTexture(çizici, "düşmanmermi.png");
     }
    
     
@@ -80,7 +82,7 @@ int main(void) {
                         case SDLK_RIGHT:
                             anagemi.x += anagemi.hız;
                             if (anagemi.x > 730) {
-                                anagemi.x = 730; // Sağ sınır
+                                anagemi.x = 730; 
                             }
                             break;
                         case SDLK_SPACE:
@@ -108,6 +110,7 @@ int main(void) {
         mermiçiz(düşman_mermiler, çizici);
         gemiçiz(anagemi,çizici);
         düşmançiz(düşmanlar,çizici);
+        cançiz(çizici, can_resmi, anagemi.can);
 
         SDL_RenderPresent(çizici);
         SDL_Delay(16); // Yaklaşık 60 FPS için 16 ms gecikme
@@ -118,6 +121,7 @@ int main(void) {
     SDL_DestroyTexture(arkaPlan);
     SDL_DestroyTexture(düşmanResmi);
     SDL_DestroyTexture(anagemi.Gemi);
+    SDL_DestroyTexture(can_resmi);
     for (int i = 0; i < MERMİ; i++) {
         SDL_DestroyTexture(mermiler[i].Mermiresmi);
     }
