@@ -15,9 +15,10 @@ int main(void) {
     SDL_Texture* arkaPlan;
     SDL_Window* ekran= SDL_CreateWindow("oyun ekranı ", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
     SDL_Renderer* çizici = SDL_CreateRenderer(ekran, -1, SDL_RENDERER_ACCELERATED);
-    SDL_Texture* düşmanResmi = IMG_LoadTexture(çizici, "anagemi.png");
+    SDL_Texture* düşmanResmi = IMG_LoadTexture(çizici, "düşman.png");
 
     
+   int seviye = 1; 
    düşman *düşmanlar = NULL; 
    
     // Gemi özelliklerini ayarlama
@@ -28,10 +29,11 @@ int main(void) {
     anagemi.yukseklik = 100;
     anagemi.hız =20;
     anagemi.can = 5;
+
     
     //görselleri yükleme
-    arkaPlan = IMG_LoadTexture(çizici, "arkplan2.jpg");
-    anagemi.Gemi = IMG_LoadTexture(çizici, "anagemi1.png");
+    arkaPlan = IMG_LoadTexture(çizici, "arkplan.jpg");
+    anagemi.Gemi = IMG_LoadTexture(çizici, "anagemi.png");
     SDL_Texture* can_resmi = IMG_LoadTexture(çizici, "can2.png");
     
     
@@ -59,7 +61,7 @@ int main(void) {
     
 
 // Oyun döngüsü
-    düşmanekle(&düşmanlar, düşmanResmi, 5, 10); // 5 satır, 10 sütun düşman ekle
+    düşmanekle(&düşmanlar, düşmanResmi, seviye);
     int oyunDevamEdiyor = 1;
     SDL_Event olay;
             
@@ -101,7 +103,15 @@ int main(void) {
         mermiyenile(mermiler);
         düşmanmermiyenile(düşman_mermiler);
         çarpışma(mermiler, &düşmanlar, düşman_mermiler, &anagemi, &oyunDevamEdiyor);
-      
+        //seviye
+        if (düşmanlar == NULL) {
+            seviye++;
+            düşmanekle(&düşmanlar, düşmanResmi, seviye);
+
+        }
+        if (seviye %5 == 0){
+            anagemi.can++;
+        }
       
       //çizimler
         SDL_RenderClear(çizici);

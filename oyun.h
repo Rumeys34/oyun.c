@@ -42,7 +42,7 @@ void mermiçiz( mermi *mermiler, SDL_Renderer *çizici);
 void gemiçiz(gemi anagemi, SDL_Renderer *çizici);
 void arkaplançiz(SDL_Texture *arkaPlan, SDL_Renderer *çizici);
 void düşmançiz(düşman *sayı, SDL_Renderer *çizici);
-void düşmanekle (düşman **sayı, SDL_Texture* resim,int satır,int sutun);
+void düşmanekle (düşman **sayı, SDL_Texture* resim,int seviye);
 void düşmanhareket(düşman *sayı, int *oyunDevamEdiyor);
 void düşmansil(düşman **sayı);
 void düşmanateş(düşman *düşmanlar, mermi *düşman_mermiler);

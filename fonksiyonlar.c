@@ -73,24 +73,34 @@ void cançiz(SDL_Renderer *çizici,SDL_Texture *can_resmi,int kalan_can) {
 
 
 //düşman 
-void düşmanekle(düşman **sayı, SDL_Texture* resim,int satır,int sutun) {
+void düşmanekle(düşman **sayı, SDL_Texture* resim,int seviye) {
     int ilk_x = 50;
     int ilk_y = 40;
     int genislik = 45;
     int yukseklik = 40;
     int bosluk = 7;
-    for(int i=0; i<satır; i++){
-        for(int j=0;j<sutun;j++){
-            düşman *yeni = (düşman*)malloc(sizeof(düşman));
-            if (yeni == NULL) return;
-            yeni->x = ilk_x + j * (genislik + bosluk);
-            yeni->y = ilk_y + i * (yukseklik + bosluk);
-            yeni->hız = 2;
-            yeni->genislik = genislik;
-            yeni->yukseklik = yukseklik;
-            yeni->Düşmanresmi = resim;
-            yeni->sonraki = *sayı;
-            *sayı = yeni;
+
+    int satır =seviye;
+    int sutun =6;
+    float hız=3 + (seviye*0.5);
+    for (int i = 0; i < satır; i++) {
+        for (int j = 0; j < sutun; j++) {
+            düşman *d = (düşman*)malloc(sizeof(düşman));
+            if (d == NULL) return;
+            d->x = ilk_x + j * (genislik + bosluk);
+
+            if (i<3){
+                d->y = ilk_y + i * (yukseklik + bosluk);
+            }
+            else{
+                d->y = ilk_y - ((i-2) * (yukseklik + bosluk));
+            }
+            d->genislik = genislik;
+            d->yukseklik = yukseklik;
+            d->hız = hız;
+            d->Düşmanresmi = resim;
+            d->sonraki = *sayı;
+            *sayı = d;
         }
     }
 }
