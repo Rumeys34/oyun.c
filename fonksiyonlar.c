@@ -71,6 +71,40 @@ void cançiz(SDL_Renderer *çizici,SDL_Texture *can_resmi,int kalan_can) {
     
 }
 
+void seviyeçiz(SDL_Renderer *çizici,SDL_Texture *seviyekutusu, TTF_Font *font,int seviye) {
+    if (seviyekutusu == NULL || font == NULL) return;
+
+    SDL_Rect kutukonum={170,170,460,260};
+    SDL_RenderCopy(çizici, seviyekutusu, NULL, &kutukonum);
+
+    char seviye_metni[10];
+    sprintf(seviye_metni, "%d", seviye);
+
+    SDL_Color yazı_rengi = {0,240,255,255};
+    SDL_Surface *yazı = TTF_RenderText_Solid(font, seviye_metni, yazı_rengi);
+    if (yazı == NULL) return;
+
+    SDL_Texture *yazı_kutusu = SDL_CreateTextureFromSurface(çizici, yazı);
+    if (yazı_kutusu == NULL) {
+        SDL_FreeSurface(yazı);
+        return;
+    }
+    int yazı_genislik = 40;
+    int yazı_yukseklik = 45;
+    SDL_QueryTexture(yazı_kutusu, NULL, NULL, &yazı_genislik, &yazı_yukseklik);
+     
+
+    SDL_Rect yazı_konum;
+    yazı_konum.x = kutukonum.x + (kutukonum.w - yazı_genislik) / 2;
+    yazı_konum.y = kutukonum.y + 115;
+    yazı_konum.w = yazı_genislik;
+    yazı_konum.h = yazı_yukseklik;
+    
+    SDL_RenderCopy(çizici, yazı_kutusu, NULL, &yazı_konum);
+   
+    SDL_FreeSurface(yazı);
+    SDL_DestroyTexture(yazı_kutusu);
+}
 
 //düşman 
 void düşmanekle(düşman **sayı, SDL_Texture* resim,int seviye) {

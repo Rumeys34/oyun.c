@@ -36,6 +36,11 @@ typedef struct düşman{
     SDL_Texture* Düşmanresmi;
 }düşman;
 
+typedef enum {
+    oyundurumu,
+    oyun_seviye_atlama
+} OyunDurumu;
+
 //fonksiyonlar
 void mermiyenile( mermi *mermiler);
 void mermiçiz( mermi *mermiler, SDL_Renderer *çizici);
@@ -49,6 +54,6 @@ void düşmanateş(düşman *düşmanlar, mermi *düşman_mermiler);
 void düşmanmermiyenile(mermi *mermiler);
 void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, int *oyunDevamEdiyor);
 void cançiz(SDL_Renderer *çizici,SDL_Texture *can_resmi,int kalan_can);
-
+void seviyeçiz(SDL_Renderer *çizici,SDL_Texture *seviyekutusu, TTF_Font *font,int seviye);
 
 #endif 
