@@ -41,6 +41,14 @@ typedef enum {
     oyun_seviye_atlama
 } OyunDurumu;
 
+typedef struct {
+   float x ,y ;
+   int genislik, yukseklik;
+   int çeşit;
+   int yokolma;
+   int can;
+} bariyer ;
+
 //fonksiyonlar
 void mermiyenile( mermi *mermiler);
 void mermiçiz( mermi *mermiler, SDL_Renderer *çizici);
@@ -52,8 +60,10 @@ void düşmanhareket(düşman *sayı, int *oyunDevamEdiyor);
 void düşmansil(düşman **sayı);
 void düşmanateş(düşman *düşmanlar, mermi *düşman_mermiler);
 void düşmanmermiyenile(mermi *mermiler);
-void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, int *oyunDevamEdiyor);
+void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, int *oyunDevamEdiyor, bariyer *bariyerler, int bariyersayısı);
 void cançiz(SDL_Renderer *çizici,SDL_Texture *can_resmi,int kalan_can);
 void seviyeçiz(SDL_Renderer *çizici,SDL_Texture *seviyekutusu, TTF_Font *font,int seviye);
+void bariyeryapma(bariyer *bariyerler, int sayı );
+void bariyerçizme(bariyer *bariyerler,int sayı, SDL_Renderer *çizici, SDL_Texture *bariyer1,SDL_Texture *bariyer2,SDL_Texture *bariyer3);
 
 #endif 

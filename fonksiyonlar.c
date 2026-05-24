@@ -106,6 +106,26 @@ void seviyeçiz(SDL_Renderer *çizici,SDL_Texture *seviyekutusu, TTF_Font *font,
     SDL_DestroyTexture(yazı_kutusu);
 }
 
+void bariyerçizme(bariyer *bariyerler,int sayı, SDL_Renderer *çizici, SDL_Texture *b1,SDL_Texture *b2,SDL_Texture *b3) {
+    for (int i = 0; i < sayı; i++) {
+        if (bariyerler[i].yokolma == 1) {
+            SDL_Rect r = { (int)bariyerler[i].x, (int)bariyerler[i].y, bariyerler[i].genislik, bariyerler[i].yukseklik };
+
+            if (bariyerler[i].çeşit == 1) {
+                SDL_RenderCopy(çizici, b1, NULL, &r);
+            } 
+            else if (bariyerler[i].çeşit == 2) {
+                SDL_RenderCopy(çizici, b2, NULL, &r);
+            } 
+            else if (bariyerler[i].çeşit == 3) {
+                SDL_RenderCopy(çizici, b3, NULL, &r);
+            }
+        }
+        
+    }
+}
+
+
 //düşman 
 void düşmanekle(düşman **sayı, SDL_Texture* resim,int seviye) {
     int ilk_x = 50;
@@ -251,7 +271,8 @@ void düşmanmermiyenile(mermi *mermiler) {
     }
 }
 //çarpışma
-void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, int *oyunDevamEdiyor) {
+void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, int *oyunDevamEdiyor, bariyer *bariyerler, int bariyersayısı) {
+  // gemi mermileri ile düşman çarpışması
     for (int i =0;i<MERMİ;i++){
         if (mermiler[i].atış==0) continue;
         düşman *gecici = *düşmanlar;
@@ -276,6 +297,7 @@ void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermile
             gecici = gecici->sonraki;
         }
     }
+    //düşman mermileri ile gemi çarpışması
     for(int i=0;i<MERMİ;i++){
         if (düşman_mermiler[i].atış==1){
             if (düşman_mermiler[i].x < anagemi->x + anagemi->genislik &&
@@ -291,7 +313,7 @@ void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermile
             }
         }
     }
-
+// gemi mermileri ile düşman mermileri çarpışması
     for (int i = 0; i < MERMİ; i++) {
         if (mermiler[i].atış == 0) continue;
         for(int j=0;j<MERMİ;j++){
@@ -308,4 +330,68 @@ void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermile
         }
         
     }
+    // bariyer çarpışmaları
+    for (int i = 0; i < bariyersayısı; i++) {
+        if (bariyerler[i].yokolma == 0) continue;
+        // gemi mermileri ile bariyer çarpışması
+        for (int j = 0; j < MERMİ; j++) {
+            //bizim mermiler çarptı mı 
+            if(mermiler[j].atış ==1){
+                if (mermiler[j].x < bariyerler[i].x + bariyerler[i].genislik &&
+                    mermiler[j].x + mermiler[j].genislik > bariyerler[i].x &&
+                    mermiler[j].y < bariyerler[i].y + bariyerler[i].yukseklik &&
+                    mermiler[j].y + mermiler[j].yukseklik > bariyerler[i].y) {
+                    
+                    mermiler[j].atış = 0; 
+                    bariyerler[i].can--;
+                    if (bariyerler[i].can <= 0) {
+                        bariyerler[i].yokolma = 0;
+                    }
+                }
+            }
+            //düşman mermileri çarptı mı
+            if(düşman_mermiler[j].atış ==1){
+                if (düşman_mermiler[j].x < bariyerler[i].x + bariyerler[i].genislik &&
+                    düşman_mermiler[j].x + düşman_mermiler[j].genislik > bariyerler[i].x &&
+                    düşman_mermiler[j].y < bariyerler[i].y + bariyerler[i].yukseklik &&
+                    düşman_mermiler[j].y + düşman_mermiler[j].yukseklik > bariyerler[i].y) {
+                    
+                    düşman_mermiler[j].atış = 0; 
+                    bariyerler[i].can--;
+                    if (bariyerler[i].can <= 0) {
+                        bariyerler[i].yokolma = 0;
+                    }
+                }
+            }
+           
+            
+        }
+    }
 }
+
+
+
+
+
+
+// bariyer
+void bariyeryapma(bariyer *bariyerler, int sayı ){
+    int ilk_x = 90;
+    int boşluk =190;
+
+    for (int i = 0; i < sayı; i++) {
+        bariyerler[i].x = ilk_x + (i * boşluk);
+        bariyerler[i].y = 440;
+        bariyerler[i].genislik = 40;
+        bariyerler[i].yukseklik = 20;
+        bariyerler[i].yokolma = 1;
+
+        int rastgele = rand() % 3+1;
+        bariyerler[i].çeşit = rastgele;
+        bariyerler[i].can =rastgele;
+
+    }
+}
+
+
+

@@ -25,12 +25,13 @@ int main(void) {
     SDL_Texture* düşmanResmi = IMG_LoadTexture(çizici, "düşman.png");
     SDL_Texture* can_resmi = IMG_LoadTexture(çizici, "can2.png");
     SDL_Texture* seviyekutusu = IMG_LoadTexture(çizici, "seviyekutusu3.png");
-     if (!arkaPlan) printf("Hata: %s\n", SDL_GetError());
-     if (!düşmanResmi) printf("Hata: %s\n", SDL_GetError());
-     if (!can_resmi) printf("Hata: %s\n", SDL_GetError());
+    SDL_Texture* b1_resmi = IMG_LoadTexture(çizici, "bariyer1.png");
+    SDL_Texture* b2_resmi = IMG_LoadTexture(çizici, "bariyer2.png");
+    SDL_Texture* b3_resmi = IMG_LoadTexture(çizici, "bariyer3.png");
     TTF_Font* font = TTF_OpenFont("retro.ttf", 32);
-   if (!seviyekutusu) printf("kritik hata:Seviyekutusu yüklenemedi: \n");
-    if (!font) printf("KRİTİK HATA: arial.ttf hafizaya alinamadi!\n");
+   
+    bariyer bariyerler[3];
+    bariyeryapma(bariyerler, 3);
    
    int seviye = 1;             
    düşman* düşmanlar = NULL; 
@@ -124,7 +125,7 @@ int main(void) {
             düşmanhareket(düşmanlar, &oyunDevamEdiyor);
             mermiyenile(mermiler);
             düşmanmermiyenile(düşman_mermiler);
-            çarpışma(mermiler, &düşmanlar, düşman_mermiler, &anagemi, &oyunDevamEdiyor);
+            çarpışma(mermiler, &düşmanlar, düşman_mermiler, &anagemi, &oyunDevamEdiyor, bariyerler, 3);
         } 
         //seviye
         if (düşmanlar == NULL) {
@@ -139,7 +140,7 @@ int main(void) {
                 mermiler[i].atış = 0;
                 düşman_mermiler[i].atış = 0;
             }
-            
+            bariyeryapma(bariyerler, 3);
             günceldurum = oyun_seviye_atlama;
             başlangıç_zamanı = SDL_GetTicks();
         } 
@@ -157,6 +158,7 @@ int main(void) {
         mermiçiz(düşman_mermiler, çizici);
         gemiçiz(anagemi,çizici);
         düşmançiz(düşmanlar,çizici);
+        bariyerçizme(bariyerler, 3, çizici, b1_resmi, b2_resmi, b3_resmi);
         cançiz(çizici, can_resmi, anagemi.can);
       }
       else if (günceldurum == oyun_seviye_atlama) {
@@ -178,6 +180,11 @@ int main(void) {
     SDL_DestroyTexture(düşmanResmi);
     SDL_DestroyTexture(anagemi.Gemi);
     SDL_DestroyTexture(can_resmi);
+    SDL_DestroyTexture(seviyekutusu);
+     SDL_DestroyTexture(b1_resmi);
+    SDL_DestroyTexture(b2_resmi);
+    SDL_DestroyTexture(b3_resmi);
+    TTF_CloseFont(font);
     for (int i = 0; i < MERMİ; i++) {
         SDL_DestroyTexture(mermiler[i].Mermiresmi);
     }
@@ -188,6 +195,7 @@ int main(void) {
     
     SDL_DestroyRenderer(çizici);
     SDL_DestroyWindow(ekran);
+    TTF_Quit();
     IMG_Quit();
     SDL_Quit();
 
