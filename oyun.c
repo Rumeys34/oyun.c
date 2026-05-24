@@ -28,7 +28,7 @@ int main(void) {
      if (!arkaPlan) printf("Hata: %s\n", SDL_GetError());
      if (!düşmanResmi) printf("Hata: %s\n", SDL_GetError());
      if (!can_resmi) printf("Hata: %s\n", SDL_GetError());
-    TTF_Font* font = TTF_OpenFont("lilita.ttf", 24);
+    TTF_Font* font = TTF_OpenFont("retro.ttf", 32);
    if (!seviyekutusu) printf("kritik hata:Seviyekutusu yüklenemedi: \n");
     if (!font) printf("KRİTİK HATA: arial.ttf hafizaya alinamadi!\n");
    
