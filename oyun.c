@@ -30,10 +30,11 @@ int main(void) {
     SDL_Texture* b3_resmi = IMG_LoadTexture(çizici, "bariyer3.png");
     TTF_Font* font = TTF_OpenFont("retro.ttf", 32);
    
-    bariyer bariyerler[3];
-    bariyeryapma(bariyerler, 3);
+    bariyer bariyerler[4];
+    bariyeryapma(bariyerler, 4);
    
-   int seviye = 1;             
+   int seviye = 1;  
+   int skor=0;           
    düşman* düşmanlar = NULL; 
    OyunDurumu günceldurum = oyundurumu;
    Uint32 başlangıç_zamanı = 0;
@@ -125,12 +126,12 @@ int main(void) {
             düşmanhareket(düşmanlar, &oyunDevamEdiyor);
             mermiyenile(mermiler);
             düşmanmermiyenile(düşman_mermiler);
-            çarpışma(mermiler, &düşmanlar, düşman_mermiler, &anagemi, &oyunDevamEdiyor, bariyerler, 3);
+            çarpışma(mermiler, &düşmanlar, düşman_mermiler, &anagemi, &oyunDevamEdiyor, bariyerler, 4,&skor);
         } 
         //seviye
-        if (düşmanlar == NULL) {
+        if (düşmanlar == NULL && günceldurum == oyundurumu) {
             seviye++;
-            düşmanekle(&düşmanlar, düşmanResmi, seviye);
+            
 
             if (seviye %5 == 0){
                 anagemi.can++;
@@ -140,12 +141,13 @@ int main(void) {
                 mermiler[i].atış = 0;
                 düşman_mermiler[i].atış = 0;
             }
-            bariyeryapma(bariyerler, 3);
+            bariyeryapma(bariyerler, 4);
             günceldurum = oyun_seviye_atlama;
             başlangıç_zamanı = SDL_GetTicks();
         } 
         if (günceldurum == oyun_seviye_atlama) {
             if (SDL_GetTicks() - başlangıç_zamanı > 1000) {
+                düşmanekle(&düşmanlar, düşmanResmi, seviye);
                 günceldurum = oyundurumu;
             }  
         } 
@@ -158,8 +160,9 @@ int main(void) {
         mermiçiz(düşman_mermiler, çizici);
         gemiçiz(anagemi,çizici);
         düşmançiz(düşmanlar,çizici);
-        bariyerçizme(bariyerler, 3, çizici, b1_resmi, b2_resmi, b3_resmi);
+        bariyerçizme(bariyerler, 4, çizici, b1_resmi, b2_resmi, b3_resmi);
         cançiz(çizici, can_resmi, anagemi.can);
+        skorçiz(çizici,font,skor);
       }
       else if (günceldurum == oyun_seviye_atlama) {
         SDL_SetRenderDrawBlendMode(çizici, SDL_BLENDMODE_BLEND);

@@ -125,7 +125,30 @@ void bariyerçizme(bariyer *bariyerler,int sayı, SDL_Renderer *çizici, SDL_Tex
     }
 }
 
+void skorçiz(SDL_Renderer *çizici,TTF_Font *font,int skor){
+    if (font== NULL) return;
+    char skormetin[30];
+    sprintf(skormetin,"SCORE %d",skor);
 
+    SDL_Color yazırengi = {0,240,255,255};
+    SDL_Surface *yazı = TTF_RenderText_Solid(font,skormetin,yazırengi);
+    if (yazı == NULL) return;
+    SDL_Texture *yazıdoku = SDL_CreateTextureFromSurface(çizici,yazı);
+    if (yazıdoku == NULL){
+        SDL_FreeSurface(yazı);
+        return;
+    }
+    SDL_Rect konum;
+    konum.x=20;
+    konum.y=20;
+    konum.w=140;
+    konum.h=25;
+
+    SDL_RenderCopy(çizici,yazıdoku,NULL,&konum);
+
+    SDL_FreeSurface(yazı);
+    SDL_DestroyTexture(yazıdoku);
+}
 //düşman 
 void düşmanekle(düşman **sayı, SDL_Texture* resim,int seviye) {
     int ilk_x = 50;
@@ -271,7 +294,7 @@ void düşmanmermiyenile(mermi *mermiler) {
     }
 }
 //çarpışma
-void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, int *oyunDevamEdiyor, bariyer *bariyerler, int bariyersayısı) {
+void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, int *oyunDevamEdiyor, bariyer *bariyerler, int bariyersayısı,int *skor) {
   // gemi mermileri ile düşman çarpışması
     for (int i =0;i<MERMİ;i++){
         if (mermiler[i].atış==0) continue;
@@ -290,6 +313,8 @@ void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermile
                 } else {
                     önceki->sonraki = gecici->sonraki;
                 }
+                (*skor) += 10;
+
                 free(gecici);
                 break;
             }
@@ -335,20 +360,17 @@ void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermile
         if (bariyerler[i].yokolma == 0) continue;
         // gemi mermileri ile bariyer çarpışması
         for (int j = 0; j < MERMİ; j++) {
-            //bizim mermiler çarptı mı 
-            if(mermiler[j].atış ==1){
-                if (mermiler[j].x < bariyerler[i].x + bariyerler[i].genislik &&
-                    mermiler[j].x + mermiler[j].genislik > bariyerler[i].x &&
-                    mermiler[j].y < bariyerler[i].y + bariyerler[i].yukseklik &&
-                    mermiler[j].y + mermiler[j].yukseklik > bariyerler[i].y) {
+            if(mermiler[j].atış==1){
+                if (mermiler[i].x < bariyerler[j].x + bariyerler[j].genislik &&
+                    mermiler[i].x + mermiler[i].genislik > bariyerler[j].x &&
+                    mermiler[i].y < bariyerler[j].y + bariyerler[j].yukseklik &&
+                    mermiler[i].y + mermiler[i].yukseklik > bariyerler[j].y) {
                     
-                    mermiler[j].atış = 0; 
-                    bariyerler[i].can--;
-                    if (bariyerler[i].can <= 0) {
-                        bariyerler[i].yokolma = 0;
-                    }
+                    mermiler[i].atış = 0;   
                 }
             }
+
+                
             //düşman mermileri çarptı mı
             if(düşman_mermiler[j].atış ==1){
                 if (düşman_mermiler[j].x < bariyerler[i].x + bariyerler[i].genislik &&
