@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+extern ekranlar ekran;
+
 
 //çizim
 void mermiçiz(mermi *mermiler, SDL_Renderer *çizici) {
@@ -130,7 +132,7 @@ void skorçiz(SDL_Renderer *çizici,TTF_Font *font,int skor){
     char skormetin[30];
     sprintf(skormetin,"SCORE %d",skor);
 
-    SDL_Color yazırengi = {0,240,255,255};
+    SDL_Color yazırengi = {255,240,140,0};
     SDL_Surface *yazı = TTF_RenderText_Solid(font,skormetin,yazırengi);
     if (yazı == NULL) return;
     SDL_Texture *yazıdoku = SDL_CreateTextureFromSurface(çizici,yazı);
@@ -141,14 +143,61 @@ void skorçiz(SDL_Renderer *çizici,TTF_Font *font,int skor){
     SDL_Rect konum;
     konum.x=20;
     konum.y=20;
-    konum.w=140;
-    konum.h=25;
+    konum.w=120;
+    konum.h=20;
 
     SDL_RenderCopy(çizici,yazıdoku,NULL,&konum);
 
     SDL_FreeSurface(yazı);
     SDL_DestroyTexture(yazıdoku);
 }
+
+void girişçiz(SDL_Renderer *çizici,SDL_Texture *girişresmi){
+    if (girişresmi != NULL){
+        SDL_RenderCopy(çizici,girişresmi,NULL,NULL);
+    }
+}
+
+void çıkışçiz(SDL_Renderer *çizici,SDL_Texture *çıkışresmi ){
+       if (çıkışresmi != NULL){
+        SDL_RenderCopy(çizici,çıkışresmi,NULL,NULL);
+    }
+}
+
+void çıkışskor (SDL_Renderer *çizici,TTF_Font *font,int skor){
+    if (font== NULL) return;
+    char skormetin[30];
+    sprintf(skormetin,"%d",skor);
+
+    SDL_Color yazırengi = {255,240,140,0};
+    
+    SDL_Surface *yazı = TTF_RenderText_Solid(font,skormetin,yazırengi);
+    if (yazı == NULL) return;
+    SDL_Texture *yazıdoku = SDL_CreateTextureFromSurface(çizici,yazı);
+    if (yazıdoku == NULL){
+        SDL_FreeSurface(yazı);
+        return;
+    }
+    SDL_Rect konum;
+    konum.x=385;
+    konum.y=431;
+    konum.w=40;
+    konum.h=28;
+
+    SDL_RenderCopy(çizici,yazıdoku,NULL,&konum);
+
+    SDL_FreeSurface(yazı);
+    SDL_DestroyTexture(yazıdoku);
+}
+
+void howtoplayçiz (SDL_Renderer *çizici,SDL_Texture *howtoplayresim){
+    if (howtoplayresim != NULL){
+        SDL_RenderCopy(çizici,howtoplayresim,NULL,NULL);
+    }
+}
+
+
+
 //düşman 
 void düşmanekle(düşman **sayı, SDL_Texture* resim,int seviye) {
     int ilk_x = 50;
@@ -183,7 +232,7 @@ void düşmanekle(düşman **sayı, SDL_Texture* resim,int seviye) {
 }
 
 static int yön = 1; 
-void düşmanhareket(düşman *sayı,int *oyunDevamEdiyor){
+void düşmanhareket(düşman *sayı){
     düşman *gecici = sayı;
     int duvar_sayacı = 0;
 
@@ -204,7 +253,7 @@ void düşmanhareket(düşman *sayı,int *oyunDevamEdiyor){
         while(gecici != NULL){
             gecici->y += 10;
             if (gecici->y + gecici->yukseklik >= 530) {
-                *oyunDevamEdiyor = 0; 
+                ekran = çıkışekranı; 
                 break;
             }
             gecici = gecici->sonraki;
@@ -294,7 +343,7 @@ void düşmanmermiyenile(mermi *mermiler) {
     }
 }
 //çarpışma
-void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, int *oyunDevamEdiyor, bariyer *bariyerler, int bariyersayısı,int *skor) {
+void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermiler, gemi *anagemi, bariyer *bariyerler, int bariyersayısı,int *skor) {
   // gemi mermileri ile düşman çarpışması
     for (int i =0;i<MERMİ;i++){
         if (mermiler[i].atış==0) continue;
@@ -333,7 +382,7 @@ void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermile
                 düşman_mermiler[i].atış = 0; 
                 anagemi->can--;
                 if (anagemi->can <= 0) {
-                    *oyunDevamEdiyor = 0;
+                    ekran = çıkışekranı;
                 }
             }
         }
@@ -361,12 +410,12 @@ void çarpışma (mermi *mermiler,düşman **düşmanlar,mermi *düşman_mermile
         // gemi mermileri ile bariyer çarpışması
         for (int j = 0; j < MERMİ; j++) {
             if(mermiler[j].atış==1){
-                if (mermiler[i].x < bariyerler[j].x + bariyerler[j].genislik &&
-                    mermiler[i].x + mermiler[i].genislik > bariyerler[j].x &&
-                    mermiler[i].y < bariyerler[j].y + bariyerler[j].yukseklik &&
-                    mermiler[i].y + mermiler[i].yukseklik > bariyerler[j].y) {
+                if (mermiler[j].x < bariyerler[i].x + bariyerler[i].genislik &&
+                    mermiler[j].x + mermiler[j].genislik > bariyerler[i].x &&
+                    mermiler[j].y < bariyerler[i].y + bariyerler[i].yukseklik &&
+                    mermiler[j].y + mermiler[j].yukseklik > bariyerler[i].y) {
                     
-                    mermiler[i].atış = 0;   
+                    mermiler[j].atış = 0;   
                 }
             }
 
