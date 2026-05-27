@@ -16,7 +16,7 @@ dersi kapsamında geliştirilmiş, C dili ve SDL/SDL2  kütüphanesi kullanılar
 * Sağ Ok Tuşu:Oyuncu gemisini sağa hareket ettirir.
 * Space Tuşu:Oyuncu gemisinin mermisini ateşler.
 
-Oyunun Amacı:Başlangıçta 5 olan can hakları tükenmeden önce düşman gemilerini yok ederek en yüksek skora ulaşmaktır. Her 5 seviyede bir gemi +1 ekstra can hakkı kazanır.
+Oyunun Amacı:Başlangıçta 5 olan can hakları tükenmeden önce düşman gemilerini yok ederek en yüksek skora ulaşmaktır. Her 5 seviyede bir gemi +1 ekstra can hakkı kazanır ve her yok ettiğimiz gemi 10 puandır.
 
 -> Kurulum ve Bağımlılıklar
 
